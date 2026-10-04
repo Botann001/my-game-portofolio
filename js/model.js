@@ -26,7 +26,7 @@ const Model = {
 
   async fetchComments() {
     try {
-      const res = await fetch(`${this.supabase.url}/rest/v1/comments?select=*&order=created_at.desc&limit=25`, {
+      const res = await fetch(`${this.supabase.url}/rest/v1/comments?select=*&order=created_at.desc&limit=30`, {
         headers: {
           'apikey': this.supabase.key,
           'Authorization': `Bearer ${this.supabase.key}`
@@ -35,6 +35,7 @@ const Model = {
       if (!res.ok) return [];
       return await res.json();
     } catch (e) {
+      console.error('Supabase fetch error:', e);
       return [];
     }
   },
@@ -50,13 +51,14 @@ const Model = {
           'Prefer': 'return=representation'
         },
         body: JSON.stringify({
+          game_id: 'general',
           name: name.trim().slice(0, 30),
-          comment: text.trim().slice(0, 250),
-          created_at: new Date().toISOString()
+          text: text.trim().slice(0, 250)
         })
       });
       return res.ok;
     } catch (e) {
+      console.error('Supabase post error:', e);
       return false;
     }
   }

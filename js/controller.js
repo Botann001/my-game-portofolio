@@ -16,6 +16,9 @@ const Controller = {
     this.bindLightbox();
     this.bindAccountSwitcher();
 
+    // Pre-fetch Supabase comments so they are immediately visible
+    this.loadComments();
+
     // Check if initial hash exists (e.g. #valo, #ml)
     const hash = window.location.hash.replace('#', '');
     if (GAMES_DATA[hash]) {
@@ -312,7 +315,7 @@ const Controller = {
       if (!nameInput.value.trim() || !textInput.value.trim()) return;
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'MENGIRIM...';
+      submitBtn.textContent = 'MENGIRIM KE SUPABASE...';
 
       const ok = await Model.postComment(nameInput.value, textInput.value);
       if (ok) {
@@ -320,7 +323,7 @@ const Controller = {
         this.playSFX();
         await this.loadComments();
       } else {
-        alert('Gagal mengirim komentar. Silakan coba lagi.');
+        alert('Gagal mengirim komentar ke Supabase. Cek koneksi internetmu.');
       }
 
       submitBtn.disabled = false;
@@ -332,23 +335,24 @@ const Controller = {
     const list = document.getElementById('commentsList');
     if (!list) return;
 
-    list.innerHTML = '<p style="color:#aaa;font-size:14px;">Memuat pesan confidant...</p>';
+    list.innerHTML = '<p style="color:var(--yellow);font-size:14px;background:rgba(0,0,0,0.6);padding:8px 12px;border-left:3px solid var(--yellow);">⚡ Menghubungkan & memuat pesan dari Supabase...</p>';
     const comments = await Model.fetchComments();
 
     if (!comments || comments.length === 0) {
-      list.innerHTML = '<p style="color:#888;font-size:14px;">Belum ada pesan. Jadilah yang pertama mengirim pesan!</p>';
+      list.innerHTML = '<p style="color:#eee;font-size:14px;background:rgba(0,0,0,0.6);padding:10px 14px;border-left:3px solid var(--yellow);">Belum ada pesan di Supabase. Jadilah yang pertama mengirim pesan!</p>';
       return;
     }
 
     list.innerHTML = comments.map(c => {
       const date = c.created_at ? new Date(c.created_at).toLocaleDateString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '';
+      const text = c.text || c.comment || '';
       return `
         <div class="comment-bubble">
           <div>
             <b>${this.escapeHTML(c.name || 'Anonymous Phantom')}</b>
             <small>${date}</small>
           </div>
-          <p>${this.escapeHTML(c.comment || '')}</p>
+          <p>${this.escapeHTML(text)}</p>
         </div>
       `;
     }).join('');
