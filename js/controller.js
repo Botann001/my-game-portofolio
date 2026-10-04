@@ -87,7 +87,8 @@ const Controller = {
     // Back buttons
     document.querySelectorAll('[data-back]').forEach(btn => {
       btn.addEventListener('click', () => {
-        this.goTo('home');
+        const dest = btn.dataset.back || 'home';
+        this.goTo(dest);
       });
     });
   },
@@ -120,18 +121,20 @@ const Controller = {
 
   bindKeyboard() {
     window.addEventListener('keydown', (e) => {
-      // ESC key to go back home
+      // ESC key to go back
       if (e.key === 'Escape') {
         if (!View.els.lightbox.hidden) {
           View.closeLB();
+        } else if (Model.state.screen === 'game') {
+          this.goTo('games');
         } else if (Model.state.screen !== 'home') {
           this.goTo('home');
         }
         return;
       }
 
-      // Quick numbers 1 - 4 on Home to open games
-      if (Model.state.screen === 'home' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      // Quick numbers 1 - 4 to open games
+      if ((Model.state.screen === 'home' || Model.state.screen === 'games') && !e.ctrlKey && !e.altKey && !e.metaKey) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const map = { '1': 'ml', '2': 'wuwa', '3': 'valo', '4': 'roblox' };
         if (map[e.key]) {
@@ -405,5 +408,6 @@ const Controller = {
 document.addEventListener('DOMContentLoaded', () => {
   Controller.init();
 });
+
 
 

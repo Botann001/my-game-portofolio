@@ -1554,3 +1554,123 @@ body {
   flex-wrap: wrap;
   transform: skewX(-4deg);
 }
+
+/* ============ PHANTOM CALLING CARD HERO (HOME SCREEN) ============ */
+.phantom-calling-card-hero {
+  background: var(--card-bg);
+  border: 3px solid var(--white);
+  border-left: 8px solid var(--red);
+  box-shadow: 10px 10px 0 var(--black);
+  padding: 32px 36px;
+  position: relative;
+  overflow: hidden;
+  transform: rotate(-1.5deg) skewX(-2deg);
+  transition: transform .25s var(--p-ease), box-shadow .25s;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.phantom-calling-card-hero:hover {
+  transform: rotate(0deg) skewX(0deg) translateY(-4px);
+  box-shadow: 14px 14px 0 var(--red);
+  border-color: var(--yellow);
+}
+
+.calling-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 2px dashed rgba(255, 255, 255, .3);
+  padding-bottom: 10px;
+}
+
+.calling-card-badge {
+  font-family: var(--font-tech);
+  font-size: 13px;
+  letter-spacing: .2em;
+  color: var(--red);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.calling-card-mark {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .1em;
+  transform: skewX(-8deg);
+}
+
+.calling-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  color: var(--white);
+  line-height: .95;
+  letter-spacing: .04em;
+  text-shadow: 3px 3px 0 var(--black);
+}
+
+.calling-card-desc {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #ddd;
+}
+
+.calling-card-desc b {
+  color: var(--yellow);
+}
+
+.calling-card-meta-row {
+  display: flex;
+  gap: 24px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, .15);
+  border-bottom: 1px solid rgba(255, 255, 255, .15);
+}
+
+.calling-card-meta-row .meta-item b {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--yellow);
+  display: block;
+  line-height: 1;
+}
+
+.calling-card-meta-row .meta-item span {
+  font-size: 12px;
+  letter-spacing: .15em;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.calling-card-footer {
+  margin-top: 6px;
+}
+
+.btn-large {
+  padding: 14px 30px;
+  font-size: 18px;
+  width: 100%;
+  text-align: center;
+}
+
+/* ============ CARDS BANNER ON SCREEN-GAMES ============ */
+.cards-banner-p5 {
+  margin-bottom: 24px;
+  max-width: 1100px;
+}
+
+#screen-games .game-cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+}
+
+#screen-games .card-preview {
+  height: 115px;
+}

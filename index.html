@@ -78,7 +78,7 @@
             </p>
 
             <nav id="menu" aria-label="Menu Navigasi">
-              <button class="menu-item sel" data-target="home">
+              <button class="menu-item sel" data-target="games">
                 <span class="ransom" data-ransom="[01] MY GAMES"></span>
                 <span class="cursor-mark">▶</span>
               </button>
@@ -112,22 +112,55 @@
             </div>
           </div>
 
-          <!-- Right: Game Tarot Calling Cards -->
+          <!-- Right: Hero Calling Card Showcase -->
           <div class="home-right">
-            <div class="cards-head">
-              <h3>// CALLING CARDS</h3>
-              <span>KLIK KARTU UNTUK STATS LENGKAP</span>
+            <div class="phantom-calling-card-hero">
+              <div class="calling-card-top">
+                <span class="calling-card-badge">// PHANTOM THIEVES OF HEARTS</span>
+                <span class="calling-card-mark">★ BOTAN ARCHIVE</span>
+              </div>
+              <h2 class="calling-card-title">TAKE YOUR HEART</h2>
+              <p class="calling-card-desc">
+                Sir Botan has demonstrated exceptional mastery across <b>Mobile Legends</b>, <b>Wuthering Waves</b>, <b>Valorant</b>, and <b>Roblox</b>.
+                Seluruh catatan kompetitif, koleksi hero & skin, serta jam bermain tersimpan aman di Calling Cards Archive.
+              </p>
+              <div class="calling-card-meta-row">
+                <div class="meta-item"><b>4</b> <span>GAMES</span></div>
+                <div class="meta-item"><b>11K+</b> <span>MATCHES</span></div>
+                <div class="meta-item"><b>1.7K+</b> <span>HOURS</span></div>
+              </div>
+              <div class="calling-card-footer">
+                <button class="btn-p5 btn-large" data-target="games">
+                  BUKA [01] MY GAMES (CALLING CARDS) ▶
+                </button>
+              </div>
             </div>
-            <div class="game-cards-grid" id="gameCardsGrid"></div>
           </div>
         </div>
       </section>
 
-      <!-- ============ SCREEN 2: GAME DETAIL ============ -->
+      <!-- ============ SCREEN: [01] MY GAMES (CALLING CARDS) ============ -->
+      <section class="screen" id="screen-games" aria-label="Koleksi Game">
+        <div class="sub-screen-top">
+          <div class="screen-head"><span class="ransom" data-ransom="MY GAMES"></span></div>
+          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+        </div>
+
+        <div class="cards-banner-p5">
+          <div class="cards-head">
+            <h3>// CALLING CARDS ARCHIVE</h3>
+            <span>PILIH KARTU UNTUK MEMBUKA DETAIL STATISTIK & AKUN</span>
+          </div>
+        </div>
+
+        <div class="game-cards-grid" id="gameCardsGrid"></div>
+      </section>
+
+      <!-- ============ SCREEN: GAME DETAIL ============ -->
       <section class="screen" id="screen-game" aria-label="Detail Game">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="GAME STATS"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="games">ESC • KEMBALI KE MY GAMES</button>
         </div>
 
         <div id="gamePanel"></div>
@@ -250,6 +283,7 @@
   <script src="js/controller.js"></script>
 </body>
 </html>
+
 
 
 
