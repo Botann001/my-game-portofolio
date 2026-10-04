@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff2f3d">
+  <meta name="description" content="Botan Gaming Portfolio • Persona 5 Edition. Koleksi profil, statistik, dan showcase game Mobile Legends, Wuthering Waves, Valorant, dan Roblox.">
+  <title>BOTAN // GAMING VAULT (Persona 5 Edition)</title>
+  <link rel="icon" href="img/valo/valo_icon.png" type="image/png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-screen="home">
+
+  <!-- BACKGROUND LAYERS -->
+  <div id="bg" aria-hidden="true">
+    <div class="bg-layer" id="bg-stripes"></div>
+    <svg class="bg-star" style="left:4%;top:6%;width:28vmax;height:28vmax" viewBox="0 0 100 100">
+      <polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#000" />
+    </svg>
+    <svg class="bg-star s2" style="right:3%;bottom:4%;width:36vmax;height:36vmax" viewBox="0 0 100 100">
+      <polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#fff" />
+    </svg>
+    <div class="bg-layer" id="bg-halftone"></div>
+    <div class="bg-layer" id="bg-vignette"></div>
+  </div>
+
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- WIPE TRANSITION -->
+  <div id="wipe" aria-hidden="true">
+    <div class="pane p3"></div>
+    <div class="pane p2"></div>
+    <div class="pane p1"></div>
+    <div class="flash"></div>
+  </div>
+
+  <!-- CUSTOM PERSONA CURSOR -->
+  <div id="cursor" aria-hidden="true"></div>
+
+  <!-- AUDIO ELEMENTS -->
+  <audio id="sfx-select" src="assets/sfx/select.mp3" preload="auto"></audio>
+  <audio id="bgm-player" src="assets/sfx/color-your-night.mp4" loop preload="auto"></audio>
+
+  <!-- BGM TOGGLE WIDGET -->
+  <button id="bgm-toggle" class="bgm-control" title="Putar / Heningkan BGM (Color Your Night)" aria-label="Toggle BGM">
+    <div class="bgm-viz" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <span class="bgm-label">BGM: OFF</span>
+  </button>
+
+  <!-- SHELL / HUD -->
+  <div id="shell">
+    <header id="hud-top">
+      <div class="hud-tag">// BOTAN GAMING VAULT</div>
+      <div class="hud-tag alt">PHANTOM THIEVES • ARCHIVE</div>
+      <div class="hud-tag accent">ONLINE • READY</div>
+    </header>
+
+    <main id="stage">
+      <!-- ============ SCREEN 1: HOME ============ -->
+      <section class="screen active" id="screen-home" aria-label="Menu Utama">
+        <div class="home-container">
+          <!-- Left: Hero, Title, Menu -->
+          <div class="home-left">
+            <div id="intro-eyebrow">TAKE YOUR HEART // GAMER PORTFOLIO</div>
+            <h1 id="big-name" aria-label="Botan">
+              <span class="ransom" data-ransom="BOTAN"></span>
+            </h1>
+            <p id="tagline">
+              Selamat datang di markas game <b>Botan</b>. Eksplorasi catatan match kompetitif, koleksi hero & skin, 
+              serta statistik game dari <b>Mobile Legends</b>, <b>Wuthering Waves</b>, <b>Valorant</b>, hingga <b>Roblox</b>.
+            </p>
+
+            <nav id="menu" aria-label="Menu Navigasi">
+              <button class="menu-item sel" data-target="home">
+                <span class="ransom" data-ransom="[01] MY GAMES"></span>
+                <span class="cursor-mark">▶</span>
+              </button>
+              <button class="menu-item" data-target="stats">
+                <span class="ransom" data-ransom="[02] TOTAL STATS"></span>
+                <span class="cursor-mark">▶</span>
+              </button>
+              <button class="menu-item" data-target="aim">
+                <span class="ransom" data-ransom="[03] AIM TRAINER"></span>
+                <span class="cursor-mark">▶</span>
+              </button>
+              <button class="menu-item" data-target="comments">
+                <span class="ransom" data-ransom="[04] PHAN-SITE CHAT"></span>
+                <span class="cursor-mark">▶</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- Right: Game Tarot Calling Cards -->
+          <div class="home-right">
+            <div class="cards-head">
+              <h3>// CALLING CARDS</h3>
+              <span>KLIK KARTU UNTUK STATS LENGKAP</span>
+            </div>
+            <div class="game-cards-grid" id="gameCardsGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SCREEN 2: GAME DETAIL ============ -->
+      <section class="screen" id="screen-game" aria-label="Detail Game">
+        <div class="sub-screen-top">
+          <div class="screen-head"><span class="ransom" data-ransom="GAME STATS"></span></div>
+          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+        </div>
+
+        <div id="gamePanel"></div>
+      </section>
+
+      <!-- ============ SCREEN 3: TOTAL STATS ============ -->
+      <section class="screen" id="screen-stats" aria-label="Total Stats">
+        <div class="sub-screen-top">
+          <div class="screen-head"><span class="ransom" data-ransom="TOTAL STATS"></span></div>
+          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+        </div>
+
+        <div class="stats-banner">
+          <h3>// RINGKASAN REKOR SEPANJANG WAKTU</h3>
+          <p>Akumulasi ribuan jam bermain dan match kompetitif di berbagai semesta game.</p>
+        </div>
+
+        <div class="totals-cards-p5" id="totalStatsCards"></div>
+      </section>
+
+      <!-- ============ SCREEN 4: AIM TRAINER ============ -->
+      <section class="screen" id="screen-aim" aria-label="Mini Game Aim Trainer">
+        <div class="sub-screen-top">
+          <div class="screen-head"><span class="ransom" data-ransom="PHANTOM RETICLE"></span></div>
+          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+        </div>
+
+        <div class="aim-wrap">
+          <div class="aim-hud-p5">
+            <div class="aim-hud-box">
+              <small>SKOR</small>
+              <b id="aimScore">0</b>
+            </div>
+            <div class="aim-hud-box">
+              <small>WAKTU</small>
+              <b id="aimTime">30</b>
+            </div>
+            <div class="aim-hud-box">
+              <small>AKURASI</small>
+              <b id="aimAcc">0%</b>
+            </div>
+            <div class="aim-hud-box">
+              <small>REKOR TERBAIK</small>
+              <b id="aimBest">0</b>
+            </div>
+          </div>
+
+          <div class="aim-arena" id="aimArena">
+            <div class="aim-overlay-p5" id="aimOverlay">
+              <h3>SIAP MENEMBAK?</h3>
+              <p style="font-size:16px;color:#ccc;max-width:400px;">
+                Ketuk bintang target secepat mungkin dalam waktu 30 detik. Jangan sampai meleset!
+              </p>
+              <button class="btn-p5" id="aimStartBtn">MULAI MISI ▶</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SCREEN 5: PHAN-SITE COMMENTS ============ -->
+      <section class="screen" id="screen-comments" aria-label="Phan-Site Comments">
+        <div class="sub-screen-top">
+          <div class="screen-head"><span class="ransom" data-ransom="PHAN-SITE"></span></div>
+          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+        </div>
+
+        <div class="comments-container-p5">
+          <form class="comment-form-p5" id="commentForm">
+            <h4 style="font-family:var(--font-display);color:var(--yellow);font-size:18px;">// KIRIM PESAN KE PHAN-SITE</h4>
+            <input type="text" id="commentName" placeholder="Nama / Nickname Gamermu" required maxlength="30" autocomplete="off">
+            <textarea id="commentText" placeholder="Tinggalkan pesan, ajakan mabar, atau review..." required rows="3" maxlength="250"></textarea>
+            <button type="submit" class="btn-p5" style="align-self:flex-start;">KIRIM KE PHAN-SITE ▶</button>
+          </form>
+
+          <h4 style="font-family:var(--font-display);color:var(--white);font-size:18px;margin-top:10px;">// DAFTAR PESAN CONFIDANT</h4>
+          <div class="comments-list-p5" id="commentsList"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="hud-bottom">
+      <div><span class="key">ESC</span> KEMBALI</div>
+      <div><span class="key">1 - 4</span> PILIH GAME</div>
+      <div><span class="key">CLICK</span> BUKA / SFX</div>
+      <div style="margin-left:auto;color:#888;">© BOTAN • PERSONA 5 THEME</div>
+    </footer>
+  </div>
+
+  <!-- LIGHTBOX MODAL -->
+  <div class="lightbox" id="lightbox" hidden>
+    <div class="lb-content">
+      <button class="lb-close" id="lbClose" aria-label="Tutup">&times;</button>
+      <img id="lbImg" alt="Screenshot Detail">
+      <p class="lb-caption" id="lbCap"></p>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/view.js"></script>
+  <script src="js/controller.js"></script>
+</body>
+</html>
