@@ -203,12 +203,27 @@ body {
 #hud-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   padding: 16px 28px 0;
   letter-spacing: .15em;
   font-weight: 700;
   gap: 12px;
   flex-wrap: wrap;
+  z-index: 50;
+}
+
+.hud-left-tags {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hud-right-tags {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
 }
 
 .hud-tag {
@@ -1329,22 +1344,19 @@ body {
 
 /* ============ BGM CONTROLS ============ */
 #bgm-toggle {
-  position: fixed;
-  bottom: 22px;
-  left: 24px;
-  z-index: 1000;
+  position: static;
   background: var(--black);
   color: var(--white);
   border: 2px solid var(--white);
   box-shadow: 4px 4px 0 var(--red);
-  padding: 8px 16px;
+  padding: 6px 14px;
   font-family: var(--font-tech);
   font-weight: 700;
   font-size: 13px;
   letter-spacing: .1em;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transform: skewX(-10deg);
   transition: all .15s;
@@ -1354,11 +1366,17 @@ body {
   background: var(--yellow);
   color: var(--black);
   border-color: var(--black);
+  transform: skewX(-10deg) translateY(-2px);
 }
 
 #bgm-toggle.playing {
   border-color: var(--yellow);
   box-shadow: 4px 4px 0 var(--yellow);
+  background: #191924;
+}
+
+#bgm-toggle.playing .bgm-label {
+  color: var(--yellow);
 }
 
 .bgm-viz {
@@ -1458,3 +1476,4 @@ body {
   #hud-top { padding: 12px 16px 0; }
   .screen { padding: 2vh 3vw; }
 }
+

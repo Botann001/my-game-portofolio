@@ -41,20 +41,22 @@
   <audio id="sfx-select" src="assets/sfx/select.mp3" preload="auto"></audio>
   <audio id="bgm-player" src="assets/sfx/color-your-night.mp4" loop preload="auto"></audio>
 
-  <!-- BGM TOGGLE WIDGET -->
-  <button id="bgm-toggle" class="bgm-control" title="Putar / Heningkan BGM (Color Your Night)" aria-label="Toggle BGM">
-    <div class="bgm-viz" aria-hidden="true">
-      <span></span><span></span><span></span><span></span>
-    </div>
-    <span class="bgm-label">BGM: OFF</span>
-  </button>
-
   <!-- SHELL / HUD -->
   <div id="shell">
     <header id="hud-top">
-      <div class="hud-tag">// BOTAN GAMING VAULT</div>
-      <div class="hud-tag alt">PHANTOM THIEVES • ARCHIVE</div>
-      <div class="hud-tag accent">ONLINE • READY</div>
+      <div class="hud-left-tags">
+        <div class="hud-tag">// BOTAN GAMING VAULT</div>
+        <div class="hud-tag alt">PHANTOM THIEVES • ARCHIVE</div>
+      </div>
+      <div class="hud-right-tags">
+        <!-- BGM TOGGLE WIDGET (MOVED TO TOP RIGHT HUD) -->
+        <button id="bgm-toggle" class="bgm-control" title="Putar / Heningkan BGM (Color Your Night)" aria-label="Toggle BGM">
+          <div class="bgm-viz" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <span class="bgm-label">BGM: OFF</span>
+        </button>
+      </div>
     </header>
 
     <main id="stage">
@@ -212,3 +214,4 @@
   <script src="js/controller.js"></script>
 </body>
 </html>
+
