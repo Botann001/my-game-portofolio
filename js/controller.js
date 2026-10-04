@@ -169,7 +169,9 @@ const Controller = {
       if (bgm.paused) {
         bgm.play().then(() => {
           localStorage.setItem('botan_p5_bgm', '1');
-        }).catch(() => {});
+        }).catch((err) => {
+          console.warn("BGM play error:", err);
+        });
       } else {
         bgm.pause();
         localStorage.setItem('botan_p5_bgm', '0');
@@ -178,41 +180,40 @@ const Controller = {
 
     const userMuted = localStorage.getItem('botan_p5_bgm') === '0';
 
-    // 1. Coba play langsung saat halaman pertama kali dibuka
+    // 1. Coba play langsung (jika diizinkan oleh browser)
     if (!userMuted) {
-      const playPromise = bgm.play();
-      if (playPromise && playPromise.then) {
-        playPromise.then(() => {
+      bgm.play().then(() => {
+        this.audioUnlocked = true;
+        updateUI(true);
+      }).catch(() => {
+        // Pada HP / mobile: browser menunggu interaksi pertama (tap / touchstart)
+        const startOnMobile = () => {
           this.audioUnlocked = true;
-          updateUI(true);
-        }).catch(() => {
-          // Jika diblokir oleh browser Autoplay Policy, langsung putar pada sentuhan/klik/scroll pertama
-          const startOnInteraction = () => {
-            this.audioUnlocked = true;
-            if (bgm.paused && localStorage.getItem('botan_p5_bgm') !== '0') {
-              bgm.play().then(() => updateUI(true)).catch(() => {});
-            }
-            ['pointerdown', 'click', 'keydown', 'touchstart'].forEach(evt => {
-              window.removeEventListener(evt, startOnInteraction, { capture: true });
+          if (bgm.paused && localStorage.getItem('botan_p5_bgm') !== '0') {
+            bgm.play().then(() => updateUI(true)).catch((err) => {
+              console.warn("Mobile BGM start:", err);
             });
-          };
-
-          ['pointerdown', 'click', 'keydown', 'touchstart'].forEach(evt => {
-            window.addEventListener(evt, startOnInteraction, { once: true, capture: true });
+          }
+          ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+            document.removeEventListener(evt, startOnMobile, { capture: true });
           });
+        };
+
+        ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+          document.addEventListener(evt, startOnMobile, { once: true, capture: true });
         });
-      }
+      });
     }
 
     // Audio unlocker untuk efek suara (SFX)
     const unlockSFX = () => {
       this.audioUnlocked = true;
-      ['pointerdown', 'click', 'keydown', 'touchstart'].forEach(evt => {
-        window.removeEventListener(evt, unlockSFX, { capture: true });
+      ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+        document.removeEventListener(evt, unlockSFX, { capture: true });
       });
     };
-    ['pointerdown', 'click', 'keydown', 'touchstart'].forEach(evt => {
-      window.addEventListener(evt, unlockSFX, { once: true, capture: true });
+    ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
+      document.addEventListener(evt, unlockSFX, { once: true, capture: true });
     });
   },
 
@@ -404,4 +405,5 @@ const Controller = {
 document.addEventListener('DOMContentLoaded', () => {
   Controller.init();
 });
+
 

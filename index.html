@@ -39,7 +39,10 @@
 
   <!-- AUDIO ELEMENTS -->
   <audio id="sfx-select" src="assets/sfx/select.mp3" preload="auto"></audio>
-  <audio id="bgm-player" src="assets/sfx/color-your-night.mp4" autoplay loop preload="auto"></audio>
+  <audio id="bgm-player" loop preload="auto" playsinline webkit-playsinline>
+    <source src="assets/sfx/color-your-night.mp3" type="audio/mpeg">
+    <source src="assets/sfx/color-your-night.mp4" type="audio/mp4">
+  </audio>
 
   <!-- SHELL / HUD -->
   <div id="shell">
@@ -247,6 +250,7 @@
   <script src="js/controller.js"></script>
 </body>
 </html>
+
 
 
 
