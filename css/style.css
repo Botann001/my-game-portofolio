@@ -1682,7 +1682,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #0a0a0a;
+  background: #080808;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1703,10 +1703,10 @@ body {
   inset: 0;
   background: repeating-linear-gradient(
     -55deg,
-    transparent,
-    transparent 18px,
-    rgba(255,47,61,0.08) 18px,
-    rgba(255,47,61,0.08) 36px
+    #111 0px,
+    #111 20px,
+    #0d0d0d 20px,
+    #0d0d0d 40px
   );
   animation: intro-stripes-slide 4s linear infinite;
 }
@@ -1927,4 +1927,5 @@ body {
   0%   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
   100% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
 }
+
 

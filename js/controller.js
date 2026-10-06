@@ -27,7 +27,29 @@ const Controller = {
     }
   },
 
-  /* ---------- SCREEN TRANSITIONS ---------- */
+  
+  /* ---------- INTRO SPLASH (Persona 5 'Press Any Key') ---------- */
+  bindIntroSplash() {
+    const splash = document.getElementById('intro-splash');
+    if (!splash) return;
+    const dismiss = () => {
+      const bgm = document.getElementById('bgm-player');
+      const userMuted = localStorage.getItem('botan_p5_bgm') === '0';
+      if (bgm && !userMuted) {
+        bgm.play().then(() => {
+          this.audioUnlocked = true;
+          const label = document.querySelector('#bgm-toggle .bgm-label');
+          if (label) label.textContent = 'BGM: ON';
+        }).catch(err => console.warn('BGM intro play error:', err));
+      }
+      this.audioUnlocked = true;
+      splash.classList.add('exiting');
+      setTimeout(() => { splash.style.display = 'none'; }, 750);
+      ['keydown','pointerdown','touchstart'].forEach(e => document.removeEventListener(e, dismiss, {capture:true}));
+    };
+    ['keydown','pointerdown','touchstart'].forEach(e => document.addEventListener(e, dismiss, {once:true,capture:true}));
+  },
+/* ---------- SCREEN TRANSITIONS ---------- */
   goTo(screenId) {
     if (this.transitioning || Model.state.screen === screenId) return;
     this.transitioning = true;
@@ -386,6 +408,7 @@ const Controller = {
 document.addEventListener('DOMContentLoaded', () => {
   Controller.init();
 });
+
 
 
 
