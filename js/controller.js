@@ -9,6 +9,7 @@ const Controller = {
     View.init();
     this.bindIntroSplash();
     this.bindNavigation();
+    this.bindHistory();
     this.bindGameCards();
     this.bindKeyboard();
     this.bindAudio();
@@ -20,10 +21,12 @@ const Controller = {
     // Pre-fetch Supabase comments so they are immediately visible
     this.loadComments();
 
-    // Check if initial hash exists (e.g. #valo, #ml)
+    // Check if initial hash exists (e.g. #valo, #ml, #games, #aim, #comments, #stats)
     const hash = window.location.hash.replace('#', '');
     if (GAMES_DATA[hash]) {
-      this.openGame(hash);
+      this.openGame(hash, false);
+    } else if (['games', 'stats', 'aim', 'comments'].includes(hash)) {
+      this.goTo(hash, false);
     }
   },
 
@@ -49,11 +52,19 @@ const Controller = {
     };
     ['keydown','pointerdown','touchstart'].forEach(e => document.addEventListener(e, dismiss, {once:true,capture:true}));
   },
-/* ---------- SCREEN TRANSITIONS ---------- */
-  goTo(screenId) {
+/* ---------- SCREEN TRANSITIONS & HISTORY ---------- */
+  goTo(screenId, pushHistory = true) {
     if (this.transitioning || Model.state.screen === screenId) return;
     this.transitioning = true;
     this.playSFX();
+
+    if (pushHistory) {
+      try {
+        const hash = screenId === 'home' ? '' : `#${screenId}`;
+        const newUrl = hash ? `${window.location.pathname}${hash}` : window.location.pathname;
+        history.pushState({ screen: screenId }, '', newUrl);
+      } catch (e) {}
+    }
 
     View.wipe(
       () => {
@@ -72,10 +83,16 @@ const Controller = {
     );
   },
 
-  openGame(gameId) {
+  openGame(gameId, pushHistory = true) {
     if (this.transitioning) return;
     this.transitioning = true;
     this.playSFX();
+
+    if (pushHistory) {
+      try {
+        history.pushState({ screen: 'game', gameId: gameId }, '', `${window.location.pathname}#${gameId}`);
+      } catch (e) {}
+    }
 
     View.wipe(
       () => {
@@ -90,6 +107,62 @@ const Controller = {
         this.transitioning = false;
       }
     );
+  },
+
+  /* ---------- BROWSER HISTORY & BACKWARD NAVIGATION ---------- */
+  bindHistory() {
+    // 1. Establish initial history state so going backward never closes the page
+    const initialHash = window.location.hash.replace('#', '');
+    let initialScreen = 'home';
+    let initialGame = null;
+
+    if (GAMES_DATA[initialHash]) {
+      initialScreen = 'game';
+      initialGame = initialHash;
+    } else if (['games', 'stats', 'aim', 'comments'].includes(initialHash)) {
+      initialScreen = initialHash;
+    }
+
+    try {
+      history.replaceState({ screen: initialScreen, gameId: initialGame }, '', window.location.href);
+    } catch (e) {}
+
+    // 2. Handle browser Back button (desktop/mobile swipe back/Alt+Left)
+    window.addEventListener('popstate', (e) => {
+      // If lightbox modal is open, close it instead of leaving screen
+      if (View.els.lightbox && !View.els.lightbox.hidden) {
+        View.els.lightbox.hidden = true;
+        View.els.lbImg.src = '';
+        return;
+      }
+
+      // If agent profile modal is open, close it
+      const agentModal = document.getElementById('agentModal');
+      if (agentModal && !agentModal.hidden) {
+        agentModal.hidden = true;
+        return;
+      }
+
+      // Restore screen according to history state
+      const state = e.state;
+      if (state && state.screen) {
+        if (state.screen === 'game' && state.gameId) {
+          this.openGame(state.gameId, false);
+        } else {
+          this.goTo(state.screen, false);
+        }
+      } else {
+        // Fallback by checking hash
+        const hash = window.location.hash.replace('#', '');
+        if (GAMES_DATA[hash]) {
+          this.openGame(hash, false);
+        } else if (['games', 'stats', 'aim', 'comments'].includes(hash)) {
+          this.goTo(hash, false);
+        } else {
+          this.goTo('home', false);
+        }
+      }
+    });
   },
 
   /* ---------- EVENT BINDINGS ---------- */
@@ -107,16 +180,21 @@ const Controller = {
       });
     });
 
-    // Back buttons
+    // In-page Back buttons: synchronize with browser history
     document.querySelectorAll('[data-back]').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         const dest = btn.dataset.back || 'home';
-        this.goTo(dest);
+        if (window.history.length > 1 && Model.state.screen !== 'home') {
+          window.history.back();
+        } else {
+          this.goTo(dest);
+        }
       });
     });
   },
 
-  bindGameCards() {
+    bindGameCards() {
     // Click on Tarot Game cards on Home
     document.addEventListener('click', (e) => {
       const card = e.target.closest('.game-tarot-card');
@@ -146,12 +224,20 @@ const Controller = {
     window.addEventListener('keydown', (e) => {
       // ESC key to go back
       if (e.key === 'Escape') {
+        const agentModal = document.getElementById('agentModal');
         if (!View.els.lightbox.hidden) {
           View.closeLB();
-        } else if (Model.state.screen === 'game') {
-          this.goTo('games');
+        } else if (agentModal && !agentModal.hidden) {
+          agentModal.hidden = true;
+          try {
+            if (history.state && history.state.modal === 'agentModal') history.back();
+          } catch (err) {}
         } else if (Model.state.screen !== 'home') {
-          this.goTo('home');
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            this.goTo('home');
+          }
         }
         return;
       }
@@ -318,11 +404,23 @@ const Controller = {
         }
       }
 
-      if (agentModal) agentModal.hidden = false;
+            if (agentModal) {
+        agentModal.hidden = false;
+        try {
+          history.pushState({ modal: 'agentModal' }, '', window.location.href);
+        } catch (e) {}
+      }
     };
 
-    const closeModal = () => {
-      if (agentModal) agentModal.hidden = true;
+        const closeModal = () => {
+      if (agentModal && !agentModal.hidden) {
+        agentModal.hidden = true;
+        try {
+          if (history.state && history.state.modal === 'agentModal') {
+            history.back();
+          }
+        } catch (e) {}
+      }
     };
 
     if (openAgentModalBtn) openAgentModalBtn.addEventListener('click', openModal);

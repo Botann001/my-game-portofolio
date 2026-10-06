@@ -452,11 +452,21 @@ const View = {
     this.els.lbImg.src = src;
     this.els.lbCap.textContent = cap || '';
     this.els.lightbox.hidden = false;
+    try {
+      history.pushState({ modal: 'lightbox' }, '', window.location.href);
+    } catch (e) {}
   },
 
   closeLB() {
-    this.els.lightbox.hidden = true;
-    this.els.lbImg.src = '';
+    if (!this.els.lightbox.hidden) {
+      this.els.lightbox.hidden = true;
+      this.els.lbImg.src = '';
+      try {
+        if (history.state && history.state.modal === 'lightbox') {
+          history.back();
+        }
+      } catch (e) {}
+    }
   },
 
   /* ---------- SOUND EFFECT (SELECT) ---------- */
