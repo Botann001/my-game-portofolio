@@ -1929,3 +1929,262 @@ body {
 }
 
 
+
+/* ================================================================
+   HERO ART & CHARACTER ANIMATIONS - Persona 5 Style
+   ================================================================ */
+
+/* --- Diagonal Slash Shape (P5 Iconic) --- */
+#bg-slash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.55);
+  clip-path: polygon(55% 0, 100% 0, 100% 100%, 38% 100%);
+  transition: clip-path 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 1;
+}
+
+/* When not on home screen, collapse the slash */
+body:not([data-screen='home']) #bg-slash {
+  clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+}
+
+/* --- Hero Art Wrapper --- */
+#hero-art-wrap {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: clamp(280px, 40vw, 580px);
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: hidden;
+  transition: opacity 0.5s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hide hero when not on home screen */
+body:not([data-screen='home']) #hero-art-wrap {
+  opacity: 0;
+  transform: translateX(60px);
+  pointer-events: none;
+}
+
+/* --- Joker Main Character --- */
+.hero-char {
+  position: absolute;
+  bottom: 0;
+  right: -2%;
+  height: 92vh;
+  max-height: 900px;
+  width: auto;
+  object-fit: contain;
+  object-position: bottom center;
+  /* Remove the white/grey background from JPG using mix-blend-mode */
+  mix-blend-mode: multiply;
+  filter: contrast(1.3) brightness(0.9);
+}
+
+#hero-joker {
+  z-index: 3;
+  mix-blend-mode: multiply;
+  filter: contrast(1.5) brightness(0.8) saturate(0) drop-shadow(-4px 0 0 rgba(255,47,61,0.5));
+  animation: hero-float 5s ease-in-out infinite, hero-entrance 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0s, 0.3s;
+  transform-origin: bottom center;
+}
+
+#hero-morgana {
+  z-index: 4;
+  bottom: 2%;
+  right: 26%;
+  height: 20vh;
+  max-height: 190px;
+  mix-blend-mode: multiply;
+  filter: contrast(1.5) brightness(0.8) saturate(0.5) drop-shadow(2px 0 0 rgba(255,215,0,0.4));
+  animation: morgana-float 3.5s ease-in-out infinite, hero-entrance 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.5s, 0.7s;
+  transform-origin: bottom center;
+}
+
+/* Red glitch shadow behind Joker */
+#hero-joker-shadow {
+  position: absolute;
+  bottom: 0;
+  right: -2%;
+  height: 92vh;
+  max-height: 900px;
+  width: auto;
+  background: url('assets/hero/joker.jpg') no-repeat center bottom / contain;
+  mix-blend-mode: multiply;
+  filter: contrast(1.4) brightness(0.5) sepia(1) hue-rotate(320deg) saturate(8);
+  opacity: 0.4;
+  z-index: 2;
+  animation: hero-float 5s ease-in-out infinite, glitch-shift 7s ease-in-out infinite;
+  animation-delay: 0.15s, 1s;
+  transform-origin: bottom center;
+  width: clamp(280px, 40vw, 580px);
+  background-size: contain;
+  background-position: right bottom;
+}
+
+/* Entrance animation */
+@keyframes hero-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Subtle floating animation */
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  30%       { transform: translateY(-12px) rotate(0.3deg); }
+  60%       { transform: translateY(-6px) rotate(-0.2deg); }
+}
+
+@keyframes morgana-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  40%       { transform: translateY(-10px) rotate(1.5deg); }
+  70%       { transform: translateY(-4px) rotate(-0.5deg); }
+}
+
+/* Glitch offset animation */
+@keyframes glitch-shift {
+  0%, 85%, 100% { transform: translateX(0); opacity: 0.35; }
+  87%            { transform: translateX(-8px) skewX(-2deg); opacity: 0.5; }
+  89%            { transform: translateX(8px) skewX(1deg); opacity: 0.25; }
+  91%            { transform: translateX(-4px); opacity: 0.45; }
+  93%            { transform: translateX(0); opacity: 0.35; }
+}
+
+/* --- Floating Phantom Particles --- */
+.phantom-particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  animation: particle-float-in 0.8s forwards;
+}
+
+/* Diamond shape */
+.p-diamond {
+  width: 18px; height: 18px;
+  background: #ff2f3d;
+  transform: rotate(45deg);
+  top: 15%; left: 48%;
+  animation: p-drift1 8s ease-in-out infinite, particle-float-in 1s 0.5s forwards;
+  box-shadow: 0 0 12px rgba(255,47,61,0.6);
+}
+
+/* Cross / Plus */
+.p-cross::before,
+.p-cross::after {
+  content: '';
+  position: absolute;
+  background: #fff;
+}
+.p-cross { width: 12px; height: 12px; top: 65%; left: 52%; }
+.p-cross::before { width: 100%; height: 3px; top: 50%; left: 0; transform: translateY(-50%); }
+.p-cross::after  { width: 3px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+.p-cross { animation: p-drift2 11s ease-in-out infinite, particle-float-in 1s 1s forwards; }
+
+/* Circle outline */
+.p-circle {
+  width: 22px; height: 22px;
+  border: 2.5px solid #ff2f3d;
+  border-radius: 50%;
+  top: 30%; left: 55%;
+  animation: p-drift3 9s ease-in-out infinite, particle-float-in 1s 1.5s forwards;
+  box-shadow: 0 0 8px rgba(255,47,61,0.4), inset 0 0 8px rgba(255,47,61,0.1);
+}
+
+/* Small star */
+.p-star-sm {
+  width: 14px; height: 14px;
+  top: 50%; left: 45%;
+  animation: p-drift4 13s ease-in-out infinite, p-spin 6s linear infinite, particle-float-in 1s 2s forwards;
+}
+.p-star-sm::before {
+  content: '★';
+  font-size: 14px;
+  color: #ff2f3d;
+  position: absolute;
+  text-shadow: 0 0 10px rgba(255,47,61,0.8);
+}
+
+/* Thin lines */
+.p-line1 {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, transparent, #ff2f3d, transparent);
+  top: 22%; left: 42%;
+  transform: rotate(-35deg);
+  animation: p-drift5 10s ease-in-out infinite, particle-float-in 1s 0.8s forwards;
+}
+.p-line2 {
+  width: 40px; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  top: 75%; left: 50%;
+  transform: rotate(20deg);
+  animation: p-drift6 12s ease-in-out infinite, particle-float-in 1s 1.2s forwards;
+}
+
+/* Particle drift keyframes */
+@keyframes particle-float-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes p-drift1 {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  33%       { transform: rotate(45deg) translate(-15px, -20px); }
+  66%       { transform: rotate(45deg) translate(12px, -10px); }
+}
+@keyframes p-drift2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  40%       { transform: translate(-20px, -25px) rotate(45deg); }
+  70%       { transform: translate(10px, -15px) rotate(-30deg); }
+}
+@keyframes p-drift3 {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  50%       { transform: scale(1.4) translate(-10px, -18px); }
+}
+@keyframes p-drift4 {
+  0%, 100% { transform: translate(0, 0); }
+  25%       { transform: translate(-18px, -22px); }
+  75%       { transform: translate(8px, -12px); }
+}
+@keyframes p-drift5 {
+  0%, 100% { transform: rotate(-35deg) translate(0, 0); opacity: 0.6; }
+  50%       { transform: rotate(-35deg) translate(20px, -15px); opacity: 1; }
+}
+@keyframes p-drift6 {
+  0%, 100% { transform: rotate(20deg) translate(0, 0); opacity: 0.4; }
+  50%       { transform: rotate(20deg) translate(-15px, -10px); opacity: 0.8; }
+}
+@keyframes p-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 768px) {
+  #hero-art-wrap {
+    width: clamp(160px, 50vw, 280px);
+    opacity: 0.5;
+  }
+  #hero-joker { height: 60vh; }
+  #hero-morgana { height: 14vh; right: 50%; }
+  #bg-slash { clip-path: polygon(60% 0, 100% 0, 100% 100%, 45% 100%); }
+  .phantom-particle { display: none; }
+}
+
+
