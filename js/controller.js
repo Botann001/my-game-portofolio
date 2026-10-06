@@ -1,5 +1,5 @@
-﻿/* =====================================================================
-   CONTROLLER.JS — Event Handling & Logic (Persona 5 Edition)
+/* =====================================================================
+   CONTROLLER.JS � Event Handling & Logic (Persona 5 Edition)
    ===================================================================== */
 const Controller = {
   transitioning: false,
@@ -220,7 +220,7 @@ const Controller = {
     });
   },
 
-  /* ---------- AIM TRAINER (PHANTOM RETICLE) ---------- */
+  /* ---------- AIM TRAINER (PHANTOM RETICLE) & LEADERBOARD ---------- */
   bindAimTrainer() {
     const arena = document.getElementById('aimArena');
     const overlay = document.getElementById('aimOverlay');
@@ -230,10 +230,265 @@ const Controller = {
     const accEl = document.getElementById('aimAcc');
     const bestEl = document.getElementById('aimBest');
 
+    // Agent Profile UI Elements
+    const agentBar = document.getElementById('agentBar');
+    const agentDisplayName = document.getElementById('agentDisplayName');
+    const agentDisplayCodename = document.getElementById('agentDisplayCodename');
+    const openAgentModalBtn = document.getElementById('openAgentModalBtn');
+    const agentModal = document.getElementById('agentModal');
+    const closeAgentModalBtn = document.getElementById('closeAgentModalBtn');
+    const agentProfileForm = document.getElementById('agentProfileForm');
+    const inputAgentName = document.getElementById('inputAgentName');
+    const inputAgentMsg = document.getElementById('inputAgentMsg');
+    const codenameChips = document.getElementById('codenameChips');
+    const inputCustomCodename = document.getElementById('inputCustomCodename');
+
+    // Leaderboard & History UI Elements
+    const tabGlobal = document.getElementById('tabGlobalLeaderboard');
+    const tabHistory = document.getElementById('tabMyHistory');
+    const viewGlobal = document.getElementById('viewGlobalLeaderboard');
+    const viewHistory = document.getElementById('viewMyHistory');
+    const leaderboardList = document.getElementById('leaderboardList');
+    const myHistoryList = document.getElementById('myHistoryList');
+    const refreshBtn = document.getElementById('refreshLeaderboardBtn');
+
     if (!arena || !startBtn) return;
 
+    // Initialize personal best
     bestEl.textContent = Model.state.aim.best;
 
+    /* ---- 1. AGENT IDENTITY PASS (FORM DATA PENGUNJUNG) ---- */
+    let selectedCodename = 'JOKER';
+
+    const updateAgentBarDisplay = () => {
+      const profile = Model.getAgentProfile();
+      if (agentDisplayName) agentDisplayName.textContent = profile.name || 'Tamu Misterius';
+      if (agentDisplayCodename) agentDisplayCodename.textContent = profile.codename || 'JOKER';
+    };
+
+    updateAgentBarDisplay();
+
+    // Codename chip selection
+    if (codenameChips) {
+      codenameChips.querySelectorAll('.codename-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          this.playSFX();
+          codenameChips.querySelectorAll('.codename-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedCodename = chip.dataset.code;
+
+          if (selectedCodename === 'CUSTOM') {
+            if (inputCustomCodename) {
+              inputCustomCodename.style.display = 'block';
+              inputCustomCodename.focus();
+            }
+          } else {
+            if (inputCustomCodename) inputCustomCodename.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // Open agent modal
+    const openModal = () => {
+      this.playSFX();
+      const current = Model.getAgentProfile();
+      if (inputAgentName) inputAgentName.value = current.name || '';
+      if (inputAgentMsg) inputAgentMsg.value = current.message || '';
+      
+      selectedCodename = current.codename || 'JOKER';
+      if (codenameChips) {
+        let matched = false;
+        codenameChips.querySelectorAll('.codename-chip').forEach(c => {
+          if (c.dataset.code === selectedCodename) {
+            c.classList.add('active');
+            matched = true;
+          } else {
+            c.classList.remove('active');
+          }
+        });
+
+        if (!matched && inputCustomCodename) {
+          const customChip = codenameChips.querySelector('[data-code="CUSTOM"]');
+          if (customChip) customChip.classList.add('active');
+          inputCustomCodename.style.display = 'block';
+          inputCustomCodename.value = selectedCodename;
+        } else if (inputCustomCodename) {
+          inputCustomCodename.style.display = 'none';
+        }
+      }
+
+      if (agentModal) agentModal.hidden = false;
+    };
+
+    const closeModal = () => {
+      if (agentModal) agentModal.hidden = true;
+    };
+
+    if (openAgentModalBtn) openAgentModalBtn.addEventListener('click', openModal);
+    if (closeAgentModalBtn) closeAgentModalBtn.addEventListener('click', closeModal);
+    if (agentModal) {
+      agentModal.addEventListener('click', (e) => {
+        if (e.target === agentModal) closeModal();
+      });
+    }
+
+    // Save agent profile form
+    if (agentProfileForm) {
+      agentProfileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.playSFX();
+        let codename = selectedCodename;
+        if (selectedCodename === 'CUSTOM' && inputCustomCodename) {
+          codename = inputCustomCodename.value.trim().toUpperCase() || 'PHANTOM';
+        }
+
+        Model.saveAgentProfile({
+          name: inputAgentName.value,
+          codename: codename,
+          message: inputAgentMsg.value
+        });
+
+        updateAgentBarDisplay();
+        closeModal();
+      });
+    }
+
+    /* ---- 2. LEADERBOARD & HISTORY TAB SWITCHER ---- */
+    const switchTab = (tab) => {
+      this.playSFX();
+      if (tab === 'global') {
+        tabGlobal.classList.add('active');
+        tabHistory.classList.remove('active');
+        viewGlobal.classList.add('active');
+        viewHistory.classList.remove('active');
+        loadLeaderboard();
+      } else {
+        tabHistory.classList.add('active');
+        tabGlobal.classList.remove('active');
+        viewHistory.classList.add('active');
+        viewGlobal.classList.remove('active');
+        renderHistory();
+      }
+    };
+
+    if (tabGlobal) tabGlobal.addEventListener('click', () => switchTab('global'));
+    if (tabHistory) tabHistory.addEventListener('click', () => switchTab('history'));
+
+    /* ---- 3. FETCH & RENDER LEADERBOARD (SUPABASE) ---- */
+    const loadLeaderboard = async () => {
+      if (!leaderboardList) return;
+      leaderboardList.innerHTML = '<p class="hof-loading">&#9889; Mengambil peringkat dari Supabase...</p>';
+
+      const data = await Model.fetchAimLeaderboard();
+
+      if (!data || data.length === 0) {
+        leaderboardList.innerHTML = `
+          <div class="hof-empty">
+            <span class="hof-empty-icon">&#127917;</span>
+            <p>Belum ada skor yang tercatat di Supabase.</p>
+            <small>Jadilah agen Phantom pertama yang memecahkan rekor!</small>
+          </div>
+        `;
+        return;
+      }
+
+      leaderboardList.innerHTML = data.map((item, idx) => {
+        const rank = idx + 1;
+        let rankBadgeClass = 'rank-normal';
+        let rankIcon = `#${rank}`;
+
+        if (rank === 1) {
+          rankBadgeClass = 'rank-1';
+          rankIcon = '&#128081; #1';
+        } else if (rank === 2) {
+          rankBadgeClass = 'rank-2';
+          rankIcon = '&#129352; #2';
+        } else if (rank === 3) {
+          rankBadgeClass = 'rank-3';
+          rankIcon = '&#129353; #3';
+        }
+
+        const dateStr = item.created_at
+          ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : '-';
+
+        return `
+          <div class="leaderboard-row ${rankBadgeClass}">
+            <div class="lb-col-rank">
+              <span class="rank-tag">${rankIcon}</span>
+            </div>
+            <div class="lb-col-player">
+              <span class="player-name">${this.escapeHTML(item.player_name || 'Anonymous')}</span>
+              ${item.message ? `<span class="player-msg">"${this.escapeHTML(item.message)}"</span>` : ''}
+            </div>
+            <div class="lb-col-codename">
+              <span class="code-badge">${this.escapeHTML(item.codename || 'JOKER')}</span>
+            </div>
+            <div class="lb-col-score">
+              <b class="score-num">${item.score}</b>
+            </div>
+            <div class="lb-col-acc">
+              <span class="acc-val">${this.escapeHTML(item.accuracy || '0%')}</span>
+            </div>
+            <div class="lb-col-date">
+              <span class="date-txt">${dateStr}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    /* ---- 4. RENDER LOCAL MATCH HISTORY ---- */
+    const renderHistory = () => {
+      if (!myHistoryList) return;
+      const history = Model.getMyAimHistory();
+
+      if (!history || history.length === 0) {
+        myHistoryList.innerHTML = `
+          <div class="hof-empty">
+            <span class="hof-empty-icon">&#128220;</span>
+            <p>Belum ada riwayat tembakan di perangkat ini.</p>
+            <small>Mainkan mini game di atas untuk melihat riwayat latihanmu!</small>
+          </div>
+        `;
+        return;
+      }
+
+      myHistoryList.innerHTML = history.map((item, idx) => {
+        const dateStr = item.timestamp
+          ? new Date(item.timestamp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : '-';
+
+        return `
+          <div class="history-row">
+            <div class="h-col-num">#${idx + 1}</div>
+            <div class="h-col-score"><b style="color:var(--yellow);font-size:18px;">${item.score}</b></div>
+            <div class="h-col-acc">${item.accuracy}</div>
+            <div class="h-col-hits">${item.hits || 0} target</div>
+            <div class="h-col-time">${dateStr}</div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        this.playSFX();
+        refreshBtn.classList.add('rotating');
+        setTimeout(() => refreshBtn.classList.remove('rotating'), 600);
+        if (tabGlobal.classList.contains('active')) {
+          loadLeaderboard();
+        } else {
+          renderHistory();
+        }
+      });
+    }
+
+    // Initial load of leaderboard
+    loadLeaderboard();
+
+    /* ---- 5. AIM GAME LOGIC & AUTO-SUBMIT ---- */
     const spawnTarget = () => {
       arena.querySelectorAll('.aim-target').forEach(t => t.remove());
       if (!Model.state.aim.active) return;
@@ -276,26 +531,79 @@ const Controller = {
       updateAccuracy();
     });
 
-    const endGame = () => {
+    const endGame = async () => {
       Model.state.aim.active = false;
       clearInterval(Model.state.aim.timerId);
       arena.querySelectorAll('.aim-target').forEach(t => t.remove());
 
-      if (Model.state.aim.score > Model.state.aim.best) {
-        Model.state.aim.best = Model.state.aim.score;
+      const finalScore = Model.state.aim.score;
+      const finalAcc = accEl.textContent;
+      const finalHits = Model.state.aim.hits;
+      const profile = Model.getAgentProfile();
+
+      // Update personal best
+      if (finalScore > Model.state.aim.best) {
+        Model.state.aim.best = finalScore;
         localStorage.setItem('botan_p5_aim_best', Model.state.aim.best.toString());
         bestEl.textContent = Model.state.aim.best;
       }
 
+      // Show intermediate saving screen
       overlay.innerHTML = `
-        <h3>MISI SELESAI!</h3>
-        <p style="font-size:18px;color:#fff;">SKOR AKHIR: <b style="color:var(--yellow);font-size:26px;">${Model.state.aim.score}</b></p>
-        <p style="font-size:15px;color:#ccc;">Akurasi: ${accEl.textContent} • Skor Terbaik: ${Model.state.aim.best}</p>
-        <button class="btn-p5" id="aimRestartBtn">MAIN LAGI ▶</button>
+        <h3 style="color:var(--yellow);font-size:32px;">MISI SELESAI!</h3>
+        <p style="font-size:18px;color:#fff;margin:8px 0;">SKOR AKHIR: <b style="color:var(--yellow);font-size:28px;">${finalScore}</b></p>
+        <p style="font-size:14px;color:#ccc;">Akurasi: ${finalAcc} &#9670; Hits: ${finalHits}</p>
+        <p style="color:var(--yellow);font-size:14px;margin-top:10px;">&#9889; Mengirim rekor ke Supabase...</p>
       `;
       overlay.style.display = 'flex';
 
-      document.getElementById('aimRestartBtn').addEventListener('click', startGame);
+      // Submit to Supabase
+      const success = await Model.postAimScore(finalScore, finalAcc, finalHits);
+
+      // Display final results with options
+      overlay.innerHTML = `
+        <div class="aim-result-box">
+          <span class="card-tarot-tag">// MISSION COMPLETED</span>
+          <h3 style="font-family:var(--font-display);font-size:36px;color:var(--white);text-shadow:3px 3px 0 var(--black);">MISI SELESAI!</h3>
+          <div class="aim-score-highlight">
+            <small>SKOR AKHIR</small>
+            <b>${finalScore}</b>
+          </div>
+          <div class="aim-stat-pills">
+            <span>&#127917; AKURASI: <b>${finalAcc}</b></span>
+            <span>&#128128; HITS: <b>${finalHits}</b></span>
+            <span>&#127942; REKOR TERBAIK: <b>${Model.state.aim.best}</b></span>
+          </div>
+          <div class="aim-player-tag">
+            <span>AGENT: <b>${this.escapeHTML(profile.name)}</b> [${this.escapeHTML(profile.codename)}]</span>
+          </div>
+          <p style="font-size:13px;color:${success ? '#00e676' : 'var(--yellow)'};margin-top:4px;">
+            ${success ? '&#10004; Skor berhasil dicatat di Papan Peringkat Global Supabase!' : '&#9888; Rekor tersimpan di riwayat lokal!'}
+          </p>
+          <div class="aim-result-btns">
+            <button class="btn-p5" id="aimRestartBtn">MAIN LAGI &#9654;</button>
+            <button class="btn-p5 btn-secondary-p5" id="viewRankBtn">LIHAT PERINGKAT &#127942;</button>
+          </div>
+        </div>
+      `;
+
+      // Refresh leaderboard & history
+      loadLeaderboard();
+      renderHistory();
+
+      // Hook buttons
+      const restartBtn = document.getElementById('aimRestartBtn');
+      if (restartBtn) restartBtn.addEventListener('click', startGame);
+
+      const viewRankBtn = document.getElementById('viewRankBtn');
+      if (viewRankBtn) {
+        viewRankBtn.addEventListener('click', () => {
+          this.playSFX();
+          overlay.style.display = 'none';
+          const hofEl = document.getElementById('hallOfFame');
+          if (hofEl) hofEl.scrollIntoView({ behavior: 'smooth' });
+        });
+      }
     };
 
     const startGame = () => {
@@ -350,7 +658,7 @@ const Controller = {
       }
 
       submitBtn.disabled = false;
-      submitBtn.textContent = 'KIRIM KE PHAN-SITE ▶';
+      submitBtn.textContent = 'KIRIM KE PHAN-SITE ?';
     });
   },
 
@@ -358,7 +666,7 @@ const Controller = {
     const list = document.getElementById('commentsList');
     if (!list) return;
 
-    list.innerHTML = '<p style="color:var(--yellow);font-size:14px;background:rgba(0,0,0,0.6);padding:8px 12px;border-left:3px solid var(--yellow);">⚡ Menghubungkan & memuat pesan dari Supabase...</p>';
+    list.innerHTML = '<p style="color:var(--yellow);font-size:14px;background:rgba(0,0,0,0.6);padding:8px 12px;border-left:3px solid var(--yellow);">? Menghubungkan & memuat pesan dari Supabase...</p>';
     const comments = await Model.fetchComments();
 
     if (!comments || comments.length === 0) {

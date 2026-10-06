@@ -246,10 +246,28 @@
       <section class="screen" id="screen-aim" aria-label="Mini Game Aim Trainer">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="PHANTOM RETICLE"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="home">ESC &#9670; KEMBALI KE MENU</button>
         </div>
 
         <div class="aim-wrap">
+          <!-- VISITOR IDENTITY / AGENT PASS BAR -->
+          <div class="agent-bar-p5" id="agentBar">
+            <div class="agent-info-left">
+              <span class="agent-badge-icon">&#127917;</span>
+              <div class="agent-text-wrap">
+                <div class="agent-role-tag">// PHANTOM THIEF AGENT ID</div>
+                <div class="agent-display-name">
+                  <span id="agentDisplayCodename" class="agent-code-tag">JOKER</span>
+                  <span id="agentDisplayName" class="agent-name-txt">Tamu Misterius</span>
+                </div>
+              </div>
+            </div>
+            <button class="agent-edit-btn" id="openAgentModalBtn" title="Ubah Data Pengunjung / Nickname">
+              <span>&#9998; UBAH KARTU IDENTITAS</span>
+            </button>
+          </div>
+
+          <!-- AIM STATS HUD -->
           <div class="aim-hud-p5">
             <div class="aim-hud-box">
               <small>SKOR</small>
@@ -264,18 +282,76 @@
               <b id="aimAcc">0%</b>
             </div>
             <div class="aim-hud-box">
-              <small>REKOR TERBAIK</small>
+              <small>REKOR PRIBADI</small>
               <b id="aimBest">0</b>
             </div>
           </div>
 
+          <!-- ARENA -->
           <div class="aim-arena" id="aimArena">
             <div class="aim-overlay-p5" id="aimOverlay">
               <h3>SIAP MENEMBAK?</h3>
-              <p style="font-size:16px;color:#ccc;max-width:400px;">
-                Ketuk bintang target secepat mungkin dalam waktu 30 detik. Jangan sampai meleset!
+              <p style="font-size:16px;color:#ccc;max-width:440px;text-align:center;line-height:1.5;">
+                Ketuk target bintang secepat mungkin dalam 30 detik. Skor akan otomatis masuk ke <b>Papan Peringkat Global Supabase</b>!
               </p>
-              <button class="btn-p5" id="aimStartBtn">MULAI MISI ?</button>
+              <div class="aim-overlay-actions">
+                <button class="btn-p5" id="aimStartBtn">MULAI MISI &#9654;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- LEADERBOARD & RIWAYAT (HALL OF FAME) -->
+          <div class="hall-of-fame-p5" id="hallOfFame">
+            <div class="hof-header">
+              <div class="hof-title-group">
+                <span class="card-tarot-tag">// PHANTOM RETICLE LEADERBOARD</span>
+                <h3 class="hof-title">PAPAN PERINGKAT &amp; RIWAYAT PENGUNJUNG</h3>
+              </div>
+              <button class="btn-refresh-p5" id="refreshLeaderboardBtn" title="Segarkan Papan Peringkat">
+                <span>&#128260; REFRESH DATA</span>
+              </button>
+            </div>
+
+            <!-- TAB SWITCHER -->
+            <div class="hof-tabs">
+              <button class="hof-tab-btn active" id="tabGlobalLeaderboard">
+                &#127942; TOP GLOBAL RANKINGS (SUPABASE)
+              </button>
+              <button class="hof-tab-btn" id="tabMyHistory">
+                &#128220; RIWAYAT TEMBAKAN SAYA
+              </button>
+            </div>
+
+            <!-- TAB CONTENT -->
+            <div class="hof-content">
+              <!-- VIEW 1: GLOBAL LEADERBOARD -->
+              <div class="hof-view active" id="viewGlobalLeaderboard">
+                <div class="leaderboard-table-header">
+                  <span class="col-rank">RANK</span>
+                  <span class="col-player">PENGUNJUNG / AGENT</span>
+                  <span class="col-codename">CODENAME</span>
+                  <span class="col-score">SKOR</span>
+                  <span class="col-acc">AKURASI</span>
+                  <span class="col-date">WAKTU</span>
+                </div>
+                <div class="leaderboard-list" id="leaderboardList">
+                  <p class="hof-loading">&#9889; Menghubungkan &amp; memuat skor dari Supabase...</p>
+                </div>
+              </div>
+
+              <!-- VIEW 2: MY LOCAL HISTORY -->
+              <div class="hof-view" id="viewMyHistory">
+                <div class="history-table-header">
+                  <span class="col-h-num">#</span>
+                  <span class="col-h-score">SKOR</span>
+                  <span class="col-h-acc">AKURASI</span>
+                  <span class="col-h-hits">TARGET KENA</span>
+                  <span class="col-h-time">WAKTU PERTANDINGAN</span>
+                </div>
+                <div class="history-list" id="myHistoryList">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -334,6 +410,51 @@
       <button class="lb-close" id="lbClose" aria-label="Tutup">&times;</button>
       <img id="lbImg" alt="Screenshot Detail">
       <p class="lb-caption" id="lbCap"></p>
+    </div>
+  </div>
+
+    <!-- MODAL: FORM DATA PENGUNJUNG / AGENT IDENTITY PASS -->
+  <div class="agent-modal-backdrop" id="agentModal" hidden>
+    <div class="agent-modal-card">
+      <button class="agent-modal-close" id="closeAgentModalBtn" aria-label="Tutup Modal">&times;</button>
+      <div class="agent-modal-head">
+        <span class="agent-modal-tag">// PHANTOM THIEVES REGISTRATION</span>
+        <h3>KARTU IDENTITAS AGENT</h3>
+        <p>Daftarkan Nickname &amp; Codename kamu agar skor tercatat di Papan Peringkat Global Supabase!</p>
+      </div>
+
+      <form id="agentProfileForm" class="agent-form">
+        <div class="agent-form-field">
+          <label for="inputAgentName">NAMA / NICKNAME PENGUNJUNG <span style="color:var(--red);">*</span></label>
+          <input type="text" id="inputAgentName" required maxlength="25" placeholder="Contoh: Botan, Joker, Reza..." autocomplete="off">
+        </div>
+
+        <div class="agent-form-field">
+          <label>PILIH CODENAME PHANTOM THIEF</label>
+          <div class="codename-chips-grid" id="codenameChips">
+            <button type="button" class="codename-chip active" data-code="JOKER">&#127917; JOKER</button>
+            <button type="button" class="codename-chip" data-code="SKULL">&#128128; SKULL</button>
+            <button type="button" class="codename-chip" data-code="MONA">&#128049; MONA</button>
+            <button type="button" class="codename-chip" data-code="PANTHER">&#128006; PANTHER</button>
+            <button type="button" class="codename-chip" data-code="FOX">&#129418; FOX</button>
+            <button type="button" class="codename-chip" data-code="QUEEN">&#128081; QUEEN</button>
+            <button type="button" class="codename-chip" data-code="NOIR">&#129683; NOIR</button>
+            <button type="button" class="codename-chip" data-code="CROW">&#128038; CROW</button>
+            <button type="button" class="codename-chip" data-code="VIOLET">&#127872; VIOLET</button>
+            <button type="button" class="codename-chip" data-code="CUSTOM">&#9881; CUSTOM</button>
+          </div>
+          <input type="text" id="inputCustomCodename" class="custom-code-input" style="display:none;" maxlength="20" placeholder="Ketik Codename Kustom...">
+        </div>
+
+        <div class="agent-form-field">
+          <label for="inputAgentMsg">SLOGAN / PESAN TANTANGAN (OPSIONAL)</label>
+          <input type="text" id="inputAgentMsg" maxlength="50" placeholder="Contoh: I will take your heart!, Gas tantang skorku!">
+        </div>
+
+        <div class="agent-form-actions">
+          <button type="submit" class="btn-p5 submit-agent-btn">SIMPAN KARTU IDENTITAS &#10148;</button>
+        </div>
+      </form>
     </div>
   </div>
 
