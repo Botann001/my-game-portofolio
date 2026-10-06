@@ -7,6 +7,7 @@ const Controller = {
 
   init() {
     View.init();
+    this.bindIntroSplash();
     this.bindNavigation();
     this.bindGameCards();
     this.bindKeyboard();
@@ -181,32 +182,9 @@ const Controller = {
       }
     });
 
+    // Autoplay handled by intro splash (browser policy compliance)
     const userMuted = localStorage.getItem('botan_p5_bgm') === '0';
-
-    // 1. Coba play langsung (jika diizinkan oleh browser)
-    if (!userMuted) {
-      bgm.play().then(() => {
-        this.audioUnlocked = true;
-        updateUI(true);
-      }).catch(() => {
-        // Pada HP / mobile: browser menunggu interaksi pertama (tap / touchstart)
-        const startOnMobile = () => {
-          this.audioUnlocked = true;
-          if (bgm.paused && localStorage.getItem('botan_p5_bgm') !== '0') {
-            bgm.play().then(() => updateUI(true)).catch((err) => {
-              console.warn("Mobile BGM start:", err);
-            });
-          }
-          ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
-            document.removeEventListener(evt, startOnMobile, { capture: true });
-          });
-        };
-
-        ['touchstart', 'touchend', 'pointerdown', 'click'].forEach(evt => {
-          document.addEventListener(evt, startOnMobile, { once: true, capture: true });
-        });
-      });
-    }
+    if (userMuted) updateUI(false);
 
     // Audio unlocker untuk efek suara (SFX)
     const unlockSFX = () => {
@@ -408,6 +386,8 @@ const Controller = {
 document.addEventListener('DOMContentLoaded', () => {
   Controller.init();
 });
+
+
 
 
 

@@ -11,6 +11,46 @@
 </head>
 <body data-screen="home">
 
+  <!-- ========================================================= -->
+  <!-- INTRO SPLASH SCREEN (Persona 5 "Press Any Key" Gate)      -->
+  <!-- ========================================================= -->
+  <div id="intro-splash" role="dialog" aria-modal="true" aria-label="Intro Screen">
+    <div class="intro-bg-stripes" aria-hidden="true"></div>
+    <div class="intro-scanlines" aria-hidden="true"></div>
+    <svg class="intro-star s1" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#fff"/></svg>
+    <svg class="intro-star s2" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#ff2f3d"/></svg>
+    <svg class="intro-star s3" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#000"/></svg>
+    <div class="intro-content">
+      <div class="intro-top-label">
+        <span class="intro-label-tag">// PHANTOM THIEVES</span>
+        <span class="intro-label-tag alt">GAMING ARCHIVE //</span>
+      </div>
+      <div class="intro-title-wrap">
+        <div class="intro-subtitle">BOTAN presents</div>
+        <h1 class="intro-title">
+          <span class="intro-title-line line1">GAMING</span>
+          <span class="intro-title-line line2">VAULT</span>
+        </h1>
+        <div class="intro-edition-tag">PERSONA 5 EDITION</div>
+      </div>
+      <div class="intro-prompt-wrap">
+        <div class="intro-prompt-bar"></div>
+        <p class="intro-prompt" id="introPrompt">
+          <span class="intro-prompt-icon">&#9658;</span>
+          PRESS ANY KEY
+          <span class="intro-prompt-icon">&#9668;</span>
+        </p>
+        <p class="intro-prompt-sub">atau sentuh layar untuk mulai &amp; aktifkan musik</p>
+        <div class="intro-prompt-bar"></div>
+      </div>
+      <div class="intro-bottom-deco">
+        <span>COLOR YOUR NIGHT</span>
+        <span class="intro-deco-dot">&#9670;</span>
+        <span>MUSIC ENABLED ON ENTRY</span>
+      </div>
+    </div>
+  </div>
+
   <!-- BACKGROUND LAYERS -->
   <div id="bg" aria-hidden="true">
     <div class="bg-layer" id="bg-stripes"></div>
@@ -283,6 +323,7 @@
   <script src="js/controller.js"></script>
 </body>
 </html>
+
 
 
 
