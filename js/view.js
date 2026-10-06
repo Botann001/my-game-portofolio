@@ -1,5 +1,5 @@
-﻿/* =====================================================================
-   VIEW.JS — Rendering & UI Controller (Persona 5 Edition)
+/* =====================================================================
+   VIEW.JS � Rendering & UI Controller (Persona 5 Edition)
    ===================================================================== */
 const View = {
   els: {},
@@ -122,6 +122,7 @@ const View = {
   },
 
   showScreen(screenId) {
+    document.body.dataset.screen = screenId;
     this.els.screens.forEach(s => s.classList.remove('active'));
     const target = document.getElementById(`screen-${screenId}`);
     if (target) {
@@ -147,7 +148,7 @@ const View = {
           <div class="card-top">
             <img class="card-icon" src="${g.icon}" alt="${g.title}">
             <div>
-              <span class="card-tarot-tag">${g.tarot} • ${g.genre}</span>
+              <span class="card-tarot-tag">${g.tarot} � ${g.genre}</span>
               <h4 class="card-title">${g.title}</h4>
             </div>
           </div>
@@ -155,7 +156,7 @@ const View = {
             <img src="${g.poster}" alt="${g.title}" loading="lazy">
           </div>
           <p class="card-meta">${g.tagline}</p>
-          <button class="card-btn">BUKA STATS ▶</button>
+          <button class="card-btn">BUKA STATS ?</button>
         </div>
       `;
     }).join('');
@@ -214,7 +215,7 @@ const View = {
         <div class="account-switcher-p5">
           ${accounts.map((a, i) => `
             <button class="acc-pill-p5 ${i === accIdx ? 'active' : ''}" data-acc-idx="${i}">
-              <span>${a.icon || '🎮'}</span>
+              <span>${a.icon || '??'}</span>
               <span>${a.name}</span>
               <span class="tag">${a.tag || 'ACCOUNT'}</span>
             </button>
@@ -246,7 +247,7 @@ const View = {
               <circle cx="60" cy="60" r="46" stroke="#00e5ff" stroke-dasharray="${(C * winPct).toFixed(1)} ${C}" stroke-dashoffset="-${(C * (1 - winPct)).toFixed(1)}" />
             </svg>
             <div class="donut-info">
-              <b>${acc.donut.win}W • ${acc.donut.lose}L</b>
+              <b>${acc.donut.win}W � ${acc.donut.lose}L</b>
               <span>WIN RATE: ${acc.donut.pct}%</span>
               <p style="font-size:12px;color:#888;margin-top:4px;">Total Match: ${total}</p>
             </div>
@@ -311,7 +312,7 @@ const View = {
           <div class="viz-box">${vizHTML}</div>
 
           <div class="chips-p5">
-            ${acc.chips.map(c => `<span class="chip-p5">★ ${c}</span>`).join('')}
+            ${acc.chips.map(c => `<span class="chip-p5">? ${c}</span>`).join('')}
           </div>
 
           <h3 class="gallery-heading">SCREENSHOT & GALERI</h3>
@@ -347,7 +348,7 @@ const View = {
         const val = copyBtn.dataset.val;
         navigator.clipboard.writeText(val).then(() => {
           const orig = copyBtn.innerHTML;
-          copyBtn.innerHTML = `✔ TERSALIN!`;
+          copyBtn.innerHTML = `? TERSALIN!`;
           copyBtn.classList.add('copied');
           setTimeout(() => {
             copyBtn.innerHTML = orig;

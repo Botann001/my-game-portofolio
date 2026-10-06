@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ff2f3d">
-  <meta name="description" content="Botan Gaming Portfolio • Persona 5 Edition. Koleksi profil, statistik, dan showcase game Mobile Legends, Wuthering Waves, Valorant, dan Roblox.">
+  <meta name="description" content="Botan Gaming Portfolio � Persona 5 Edition. Koleksi profil, statistik, dan showcase game Mobile Legends, Wuthering Waves, Valorant, dan Roblox.">
   <title>BOTAN // GAMING VAULT (Persona 5 Edition)</title>
   <link rel="icon" href="img/valo/valo_icon.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
@@ -60,11 +60,21 @@
     <svg class="bg-star s2" style="right:3%;bottom:4%;width:36vmax;height:36vmax" viewBox="0 0 100 100">
       <polygon points="50,0 60,35 98,35 68,57 78,94 50,72 22,94 32,57 2,35 40,35" fill="#fff" />
     </svg>
+
+    <!-- FULLSCREEN PERSONA 5 MENU ARTWORK (Persona 5 style like my-datadiri) -->
+    <img class="menu-art" id="art-home" src="assets/menus/home.jpg" alt=""
+      onload="document.body.classList.add('has-art-home')" onerror="this.remove()">
+    <img class="menu-art" id="art-games" src="assets/menus/skills.jpg" alt=""
+      onload="document.body.classList.add('has-art-games')" onerror="this.remove()">
+    <img class="menu-art" id="art-stats" src="assets/menus/about.jpg" alt=""
+      onload="document.body.classList.add('has-art-stats')" onerror="this.remove()">
+    <img class="menu-art" id="art-comments" src="assets/menus/contact.jpg" alt=""
+      onload="document.body.classList.add('has-art-comments')" onerror="this.remove()">
+    <img class="menu-art" id="art-aim" src="assets/menus/skills.jpg" alt=""
+      onload="document.body.classList.add('has-art-aim')" onerror="this.remove()">
+
     <div class="bg-layer" id="bg-halftone"></div>
     <div class="bg-layer" id="bg-vignette"></div>
-
-    <!-- DIAGONAL SLASH SHAPE (like P5 menu) -->
-    <div id="bg-slash" aria-hidden="true"></div>
 
     <!-- FLOATING PHANTOM PARTICLES -->
     <div class="phantom-particle p-diamond" aria-hidden="true"></div>
@@ -73,14 +83,6 @@
     <div class="phantom-particle p-star-sm" aria-hidden="true"></div>
     <div class="phantom-particle p-line1" aria-hidden="true"></div>
     <div class="phantom-particle p-line2" aria-hidden="true"></div>
-  </div>
-
-  <!-- HERO ART: Joker Character -->
-  <div id="hero-art-wrap" aria-hidden="true">
-    <img id="hero-joker" class="hero-char" src="assets/hero/joker.jpg" alt="" loading="eager">
-    <img id="hero-morgana" class="hero-char" src="assets/hero/morgana.jpg" alt="" loading="eager">
-    <!-- Glitch red shadow duplicate -->
-    <div id="hero-joker-shadow" class="hero-char-shadow" aria-hidden="true"></div>
   </div>
 
   <div class="scanlines" aria-hidden="true"></div>
@@ -108,7 +110,7 @@
     <header id="hud-top">
       <div class="hud-left-tags">
         <div class="hud-tag">// BOTAN GAMING VAULT</div>
-        <div class="hud-tag alt">PHANTOM THIEVES • ARCHIVE</div>
+        <div class="hud-tag alt">PHANTOM THIEVES � ARCHIVE</div>
       </div>
       <div class="hud-right-tags">
         <!-- BGM TOGGLE WIDGET (MOVED TO TOP RIGHT HUD) -->
@@ -139,19 +141,19 @@
             <nav id="menu" aria-label="Menu Navigasi">
               <button class="menu-item sel" data-target="games">
                 <span class="ransom" data-ransom="[01] MY GAMES"></span>
-                <span class="cursor-mark">▶</span>
+                <span class="cursor-mark">?</span>
               </button>
               <button class="menu-item" data-target="stats">
                 <span class="ransom" data-ransom="[02] TOTAL STATS"></span>
-                <span class="cursor-mark">▶</span>
+                <span class="cursor-mark">?</span>
               </button>
               <button class="menu-item" data-target="aim">
                 <span class="ransom" data-ransom="[03] AIM TRAINER"></span>
-                <span class="cursor-mark">▶</span>
+                <span class="cursor-mark">?</span>
               </button>
               <button class="menu-item" data-target="comments">
                 <span class="ransom" data-ransom="[04] PHAN-SITE CHAT"></span>
-                <span class="cursor-mark">▶</span>
+                <span class="cursor-mark">?</span>
               </button>
             </nav>
 
@@ -176,7 +178,7 @@
             <div class="phantom-calling-card-hero">
               <div class="calling-card-top">
                 <span class="calling-card-badge">// PHANTOM THIEVES OF HEARTS</span>
-                <span class="calling-card-mark">★ BOTAN ARCHIVE</span>
+                <span class="calling-card-mark">? BOTAN ARCHIVE</span>
               </div>
               <h2 class="calling-card-title">TAKE YOUR HEART</h2>
               <p class="calling-card-desc">
@@ -190,7 +192,7 @@
               </div>
               <div class="calling-card-footer">
                 <button class="btn-p5 btn-large" data-target="games">
-                  BUKA [01] MY GAMES (CALLING CARDS) ▶
+                  BUKA [01] MY GAMES (CALLING CARDS) ?
                 </button>
               </div>
             </div>
@@ -202,7 +204,7 @@
       <section class="screen" id="screen-games" aria-label="Koleksi Game">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="MY GAMES"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="home">ESC � KEMBALI KE MENU</button>
         </div>
 
         <div class="cards-banner-p5">
@@ -219,7 +221,7 @@
       <section class="screen" id="screen-game" aria-label="Detail Game">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="GAME STATS"></span></div>
-          <button class="back-btn" data-back="games">ESC • KEMBALI KE MY GAMES</button>
+          <button class="back-btn" data-back="games">ESC � KEMBALI KE MY GAMES</button>
         </div>
 
         <div id="gamePanel"></div>
@@ -229,7 +231,7 @@
       <section class="screen" id="screen-stats" aria-label="Total Stats">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="TOTAL STATS"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="home">ESC � KEMBALI KE MENU</button>
         </div>
 
         <div class="stats-banner">
@@ -244,7 +246,7 @@
       <section class="screen" id="screen-aim" aria-label="Mini Game Aim Trainer">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="PHANTOM RETICLE"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="home">ESC � KEMBALI KE MENU</button>
         </div>
 
         <div class="aim-wrap">
@@ -273,7 +275,7 @@
               <p style="font-size:16px;color:#ccc;max-width:400px;">
                 Ketuk bintang target secepat mungkin dalam waktu 30 detik. Jangan sampai meleset!
               </p>
-              <button class="btn-p5" id="aimStartBtn">MULAI MISI ▶</button>
+              <button class="btn-p5" id="aimStartBtn">MULAI MISI ?</button>
             </div>
           </div>
         </div>
@@ -283,7 +285,7 @@
       <section class="screen" id="screen-comments" aria-label="Phan-Site Comments">
         <div class="sub-screen-top">
           <div class="screen-head"><span class="ransom" data-ransom="PHAN-SITE"></span></div>
-          <button class="back-btn" data-back="home">ESC • KEMBALI KE MENU</button>
+          <button class="back-btn" data-back="home">ESC � KEMBALI KE MENU</button>
         </div>
 
         <div class="comments-container-p5">
@@ -309,7 +311,7 @@
             <h4 style="font-family:var(--font-display);color:var(--yellow);font-size:18px;">// KIRIM PESAN KE PHAN-SITE</h4>
             <input type="text" id="commentName" placeholder="Nama / Nickname Gamermu" required maxlength="30" autocomplete="off">
             <textarea id="commentText" placeholder="Tinggalkan pesan, ajakan mabar, atau review..." required rows="3" maxlength="250"></textarea>
-            <button type="submit" class="btn-p5" style="align-self:flex-start;">KIRIM KE PHAN-SITE ▶</button>
+            <button type="submit" class="btn-p5" style="align-self:flex-start;">KIRIM KE PHAN-SITE ?</button>
           </form>
 
           <h4 style="font-family:var(--font-display);color:var(--white);font-size:18px;margin-top:10px;">// DAFTAR PESAN CONFIDANT</h4>
@@ -322,7 +324,7 @@
       <div><span class="key">ESC</span> KEMBALI</div>
       <div><span class="key">1 - 4</span> PILIH GAME</div>
       <div><span class="key">CLICK</span> BUKA / SFX</div>
-      <div style="margin-left:auto;color:#888;">© BOTAN • PERSONA 5 THEME</div>
+      <div style="margin-left:auto;color:#888;">� BOTAN � PERSONA 5 THEME</div>
     </footer>
   </div>
 
@@ -342,6 +344,7 @@
   <script src="js/controller.js"></script>
 </body>
 </html>
+
 
 
 
