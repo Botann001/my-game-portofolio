@@ -94,34 +94,60 @@ const GAMES_DATA = {
     icon: 'img/wuwa/wuwa_icon.png',
     poster: 'img/wuwa/wuwa-char.webp',
     tarot: 'THE CHARIOT',
-    tagline: '997 Jam di Steam • Union Level 80 • SOL3 Phase 8',
+    tagline: '997 Jam di Steam • Dual Account (Botan Main & Alt S6 Hiyuki)',
     accounts: [
       {
         name: 'Akun Utama',
         tag: 'MAIN',
         icon: '👑',
-        copyId: { label: 'UID Wuthering Waves', value: '901954339' },
+        copyId: { label: 'UID Wuthering Waves (Main)', value: '901954339' },
         title: 'Wuthering Waves',
-        meta: 'Nama <b>Kei Kuronuma</b> • UID 901954339 • Title <b>Legend Smasher</b> • Terakhir main 2 Okt',
+        meta: 'Nama <b>Botan</b> • UID 901954339 • Title <b>Legend Smasher</b> • Union Level <b>80</b>',
         art: 'img/wuwa/wuwa-char.webp',
-        badge: { img: 'img/wuwa/wallhaven-l8rloq.jpg', name: 'Kei Kuronuma', sub: 'Union Level 80 • SOL3 Phase Rank 8' },
+        badge: { img: 'img/wuwa/wuwa1-profile.png', name: 'Botan', sub: 'Union Level 80 • SOL3 Phase Rank 8' },
         stats: [
           { v: 997, l: 'Jam bermain (Steam)', hl: 1 },
           { v: 80, l: 'Union level', hl: 1 },
           { v: 8, l: 'SOL3 phase rank' },
+          { v: 50411, l: 'Matrix Total Points', hl: 1 },
           { v: 12, s: '+', l: 'Resonator Lv. 90', hl: 1 }
         ],
         bars: { title: 'Union EXP', cur: 1994950, max: 9999999, fmt: true },
-        chips: ['Legend Smasher', 'Union Level 80', 'SOL3 Phase Rank 8', 'Qingxiao Lv. 90', '997 Jam Steam Record'],
+        chips: ['Botan', 'Legend Smasher', 'Union Level 80', 'SOL3 Phase Rank 8', 'Aemeath Lv. 90', 'Matrix 50k+ Pts', 'hidup jokowi!!!!'],
         gallery: [
-          { src: 'img/wuwa/wuwa-roster.webp', cap: 'Koleksi Resonators (Qingxiao dipilih)' },
-          { src: 'img/wuwa/wuwa-profile.webp', cap: 'Terminal / Profil Union' },
-          { src: 'img/wuwa/wuwa-playtime.webp', cap: '997 jam tercatat di Steam' }
+          { src: 'img/wuwa/wuwa1-profile.png', cap: 'Terminal / Profil Akun Pertama (Botan - UL 80)' },
+          { src: 'img/wuwa/wuwa1-score.png', cap: 'Endstate Matrix: Singularity Expansion (Total Points 50.411 - Jiyan)' },
+          { src: 'img/wuwa/wuwa-roster.webp', cap: 'Koleksi Resonators' },
+          { src: 'img/wuwa/wuwa-playtime.webp', cap: '997 Jam tercatat di Steam' }
+        ]
+      },
+      {
+        name: 'Akun Kedua',
+        tag: 'ALT',
+        icon: '❄️',
+        copyId: { label: 'UID Wuthering Waves (Alt)', value: '704974422' },
+        title: 'Wuthering Waves',
+        meta: 'Nama <b>Botan</b> • UID 704974422 • Title <b>Scorching Frost</b> • Full S6 <b>Hiyuki</b>',
+        art: 'img/wuwa/wuwa2-c6.png',
+        badge: { img: 'img/wuwa/wuwa2-profile.png', name: 'Botan', sub: 'Union Level 80 • SOL3 Phase Rank 8' },
+        stats: [
+          { v: 80, l: 'Union level', hl: 1 },
+          { v: 8, l: 'SOL3 phase rank' },
+          { v: 6, s: ' (Full)', l: 'Resonance Chain (S6 Hiyuki)', hl: 1 },
+          { v: 15, s: '+', l: 'Resonator Lv. 90', hl: 1 },
+          { v: 90, l: 'First Team Level' }
+        ],
+        bars: { title: 'First Team Resonators', cur: 3, max: 3, fmt: false },
+        chips: ['Scorching Frost', 'Union Level 80', 'SOL3 Phase Rank 8', 'Full S6 Hiyuki', 'Lucilla Lv. 90', 'Verina Lv. 90', ':3'],
+        gallery: [
+          { src: 'img/wuwa/wuwa2-profile.png', cap: 'Terminal / Profil Akun Kedua (Botan - Scorching Frost)' },
+          { src: 'img/wuwa/wuwa2-c6.png', cap: 'Resonance Chain: Full S6 (Sequence Node 6) Hiyuki' },
+          { src: 'img/wuwa/wuwa2-team.png', cap: 'Susunan Tim Utama (Hiyuki + Lucilla + Verina Lv. 90)' },
+          { src: 'img/wuwa/wuwa2-roster.png', cap: 'Daftar Koleksi Resonator Lv. 90 Lengkap (15+ Resonator)' }
         ]
       }
     ]
   },
-
   valo: {
     id: 'valo',
     title: 'Valorant',
