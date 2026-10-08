@@ -1,5 +1,5 @@
 /* =====================================================================
-   VIEW.JS — Rendering & UI Controller (Persona 5 Edition)
+   VIEW.JS ï¿½ Rendering & UI Controller (Persona 5 Edition)
    ===================================================================== */
 const View = {
   els: {},
@@ -148,7 +148,7 @@ const View = {
           <div class="card-top">
             <img class="card-icon" src="${g.icon}" alt="${g.title}">
             <div>
-              <span class="card-tarot-tag">${g.tarot} • ${g.genre}</span>
+              <span class="card-tarot-tag">${g.tarot} ï¿½ ${g.genre}</span>
               <h4 class="card-title">${g.title}</h4>
             </div>
           </div>
@@ -247,7 +247,7 @@ const View = {
               <circle cx="60" cy="60" r="46" stroke="#00e5ff" stroke-dasharray="${(C * winPct).toFixed(1)} ${C}" stroke-dashoffset="-${(C * (1 - winPct)).toFixed(1)}" />
             </svg>
             <div class="donut-info">
-              <b>${acc.donut.win}W • ${acc.donut.lose}L</b>
+              <b>${acc.donut.win}W ï¿½ ${acc.donut.lose}L</b>
               <span>WIN RATE: ${acc.donut.pct}%</span>
               <p style="font-size:12px;color:#888;margin-top:4px;">Total Match: ${total}</p>
             </div>
@@ -453,7 +453,11 @@ const View = {
     this.els.lbCap.textContent = cap || '';
     this.els.lightbox.hidden = false;
     try {
-      history.pushState({ modal: 'lightbox' }, '', window.location.href);
+      history.pushState(
+        { modal: 'lightbox', screen: Model.state.screen, gameId: Model.state.activeGame, accIdx: Model.state.activeAccIdx },
+        '',
+        window.location.href
+      );
     } catch (e) {}
   },
 

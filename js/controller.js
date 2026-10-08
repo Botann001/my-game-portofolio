@@ -1,5 +1,5 @@
 /* =====================================================================
-   CONTROLLER.JS — Event Handling & Logic (Persona 5 Edition)
+   CONTROLLER.JS ï¿½ Event Handling & Logic (Persona 5 Edition)
    ===================================================================== */
 const Controller = {
   transitioning: false,
@@ -83,14 +83,16 @@ const Controller = {
     );
   },
 
-  openGame(gameId, pushHistory = true) {
+  openGame(gameId, pushHistory = true, accIdx = 0) {
     if (this.transitioning) return;
     this.transitioning = true;
     this.playSFX();
 
+    const targetAccIdx = (typeof accIdx === 'number' && !isNaN(accIdx)) ? accIdx : 0;
+
     if (pushHistory) {
       try {
-        history.pushState({ screen: 'game', gameId: gameId }, '', `${window.location.pathname}#${gameId}`);
+        history.pushState({ screen: 'game', gameId: gameId, accIdx: targetAccIdx }, '', `${window.location.pathname}#${gameId}`);
       } catch (e) {}
     }
 
@@ -98,8 +100,8 @@ const Controller = {
       () => {
         Model.state.screen = 'game';
         Model.state.activeGame = gameId;
-        Model.state.activeAccIdx = 0;
-        View.renderGameDetail(gameId, 0);
+        Model.state.activeAccIdx = targetAccIdx;
+        View.renderGameDetail(gameId, targetAccIdx);
         View.showScreen('game');
         View.animateCountUps();
       },
@@ -147,18 +149,39 @@ const Controller = {
       const state = e.state;
       if (state && state.screen) {
         if (state.screen === 'game' && state.gameId) {
-          this.openGame(state.gameId, false);
+          const targetAccIdx = (typeof state.accIdx === 'number') ? state.accIdx : Model.state.activeAccIdx;
+          // If we are already on this game screen, don't re-wipe screen! Just ensure active account is correct.
+          if (Model.state.screen === 'game' && Model.state.activeGame === state.gameId) {
+            if (Model.state.activeAccIdx !== targetAccIdx) {
+              Model.state.activeAccIdx = targetAccIdx;
+              View.renderGameDetail(state.gameId, targetAccIdx);
+            }
+            return;
+          }
+          this.openGame(state.gameId, false, targetAccIdx);
         } else {
+          if (Model.state.screen === state.screen) {
+            return;
+          }
           this.goTo(state.screen, false);
         }
       } else {
         // Fallback by checking hash
         const hash = window.location.hash.replace('#', '');
         if (GAMES_DATA[hash]) {
-          this.openGame(hash, false);
+          if (Model.state.screen === 'game' && Model.state.activeGame === hash) {
+            return;
+          }
+          this.openGame(hash, false, Model.state.activeAccIdx || 0);
         } else if (['games', 'stats', 'aim', 'comments'].includes(hash)) {
+          if (Model.state.screen === hash) {
+            return;
+          }
           this.goTo(hash, false);
         } else {
+          if (Model.state.screen === 'home') {
+            return;
+          }
           this.goTo('home', false);
         }
       }
@@ -212,6 +235,13 @@ const Controller = {
         const idx = +pill.dataset.accIdx;
         if (idx !== Model.state.activeAccIdx) {
           Model.state.activeAccIdx = idx;
+          try {
+            history.replaceState(
+              { screen: 'game', gameId: Model.state.activeGame, accIdx: idx },
+              '',
+              window.location.href
+            );
+          } catch (err) {}
           this.playSFX();
           View.renderGameDetail(Model.state.activeGame, idx);
           View.animateCountUps();
